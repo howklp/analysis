@@ -1,14 +1,13 @@
 # -*- coding:utf-8 -*-
-# 
-# 假定有1W个商铺，每个商铺有商品的种类从10-300种不等
-# 所有记录均生成csv文件，共pandas读取
+#
+# 所有交易记录均生成csv文件，共pandas读取
 
 import os,random,time
 import pandas as pd
 from datetime import datetime
 
 def create_shops():
-    # 创建商铺
+    # 创建商铺，假定有1W家商铺
     shops = ['s%s' % i for i in range(10000,20000)]
     #with open('shops.csv','w') as f:
     #    f.write('\n'.join(shops))
@@ -22,17 +21,11 @@ def create_products():
         price = random.randint(20,1000)
         product = '%s,%s' % (name,price)
         ret.append(product)
-    #with open('products.csv','w') as f:
-    #    f.write('\n'.join(ret))
     return ret
 
 def shop_products(shops,products):
     # 每个店铺商品（类别）数量在20-150之间     
-    # 每个商品的库存在5-999之间 
-
-    #with open('products.csv','w') as f:
-    #    f.write('shop,product,price')    
-    
+    # 每个商品的库存在5-999之间    
     results = []
     for s in shops:
         # 随机商品数量
@@ -42,11 +35,7 @@ def shop_products(shops,products):
         #print shop_products        
              
 	results += ['%s,%s' % (s,p) for p in shop_products]
-	#with open('products.csv','a+') as f: 
-	#    f.write('\n'.join(results))
-	#    f.write('\n')
-	#print 'create shop %s' % s
-    print len(results)
+    #print len(results)
     return results 
 
 
@@ -71,7 +60,6 @@ def records(products):
     	user_sample = random.sample(users,random.randint(400000,600000))        
 	results = []
         for user in user_sample:
-	    # 随机挑选1-3个店铺，购买 1 * 1 件到 3 * 5 件商品
             # 随机取1-10件商品
             # 购买数量，随机取1-3
 	    product_sample = random.sample(products,random.randint(1,10))
@@ -87,7 +75,6 @@ def records(products):
 	    f.write('\n') # 第一批数据中缺失这个换行，导致数据出错
 	t2 = time.time()
         print datetime.now(),date,t2 - t1
-        #stop
  
 shops = create_shops()
 products = create_products()
