@@ -1,5 +1,9 @@
 # -*- coding:utf-8 -*-
-#
+"""
+author:howklp@163.com
+"""
+
+
 # 所有交易记录均生成csv文件，共pandas读取
 
 import os,random,time
