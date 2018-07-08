@@ -3,12 +3,12 @@
 # 数据中由于生成程序的问题，有数据错误，，数据生成时间太长（2小时30分左右），姑且跳过处理，
 # 但如果实际遇到这种情况，会对交易额度的计算有影响，此处只做pandas的数据分析学习，不影响
 # 统计如下几项数据：
+# 该py文件执行预处理
 #    1、总的交易订单数
 #    2、总的交易额度
-#    3、交易订单数在时间上的分布
-#    4、交易额度在时间上的分布
-#    
-#    5、添加一列，记录每个订单的交易额度
+#    3、添加一列，记录每个订单的交易额度
+#    4、总体交易订单量/额度在时间的分布，存储到中间文件
+#    5、单店铺交易订单数量/额度在时间上的分布
 
 import pandas as pd
 import os,time
@@ -35,13 +35,13 @@ def start():
 	t1 = time.time()
 	analysis(chunk)
         print 'Analysis Chunk [%s]' % batch
-        print 'timeit = [%s]' % (time.time() - t1)
+        print 'timeit = [%s]' % (time.time() - t1) #每一次chunk处理耗时大概在17S
 	print '*' * 100        
         #if batch >= 2:
 	#    break
 	batch += 1
     t2 = time.time()
-    print 'Taotal Timeit = [%s]' % (t2 - t0)
+    print 'Taotal Timeit = [%s]' % (t2 - t0) #数据预处理总耗时3667.90S
 
 def analysis(chunk):
     tcount = totalCount(chunk)
