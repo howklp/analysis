@@ -27,7 +27,7 @@ total_volume = 0
 # 读取数据文件
 def start():
     f = 'orders.csv'
-    t1 = time.time()
+    t0 = time.time()
     # 分块读取，块大小为 10**7
     chunksize = 10 ** 7
     batch = 1
@@ -35,11 +35,13 @@ def start():
 	t1 = time.time()
 	analysis(chunk)
         print 'Analysis Chunk [%s]' % batch
-        print 'timeit = [%s]' % time.time() - t1
+        print 'timeit = [%s]' % (time.time() - t1)
 	print '*' * 100        
-        if batch >= 2:
-	    break
+        #if batch >= 2:
+	#    break
 	batch += 1
+    t2 = time.time()
+    print 'Taotal Timeit = [%s]' % (t2 - t0)
 
 def analysis(chunk):
     tcount = totalCount(chunk)
@@ -52,7 +54,10 @@ def analysis(chunk):
     
     # 每天的交易订单量
     statDay(chunk)
-    #stop
+
+    # 店铺日交易统计
+    shopStat(chunk)
+    
 
 # ==========================================================================
 # 计算总体
@@ -88,21 +93,34 @@ def statDay(chunk):
     day.to_csv('temp/day_stat.csv',mode='a',header=0)    
 # ==========================================================================
 # 计算具体的店铺数据
-def shopStat(chunk):
+def shopStat(chunk): 
     # 将店铺的日订单数，日销售额等数据写入临时文件
     count = chunk.groupby(['shop','date']).count()
     count = count['volume'].to_frame()
-
+    count.rename(columns={'volume':'count'},inplace=True)
+    
     volume = chunk.groupby(['shop','date'])['volume'].sum().to_frame()
+    
+    shop_day = count.join(volume,how='inner')
+
+    shop_day.to_csv('temp/shop_day_stat.csv',mode='a',header=0)
 
  
 # ==========================================================================
 def init():
     # 初始化
     # 删除上次计算的临时文件     
-    os.remove('temp/day_stat.csv')
+    if not os.path.exists('temp/'):
+	os.mkdir('temp/')
+    if os.path.exists('temp/day_stat.csv'):
+	os.remove('temp/day_stat.csv')
     with open('temp/day_stat.csv','w') as f:
 	f.write('date,count,volume\n')
+
+    if os.path.exists('temp/shop_day_stat.csv'):
+	os.remove('temp/shop_day_stat.csv')
+    with open('temp/shop_day_stat.csv','w') as f:
+	f.write('shop,date,count,volume\n')
 
 if __name__ == '__main__':
     init()
